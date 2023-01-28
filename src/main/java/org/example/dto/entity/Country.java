@@ -1,4 +1,4 @@
-package org.example.entity;
+package org.example.dto.entity;
 
 public enum Country {
     ARMENIA,

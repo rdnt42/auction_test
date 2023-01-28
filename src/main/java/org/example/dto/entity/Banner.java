@@ -1,4 +1,4 @@
-package org.example.entity;
+package org.example.dto.entity;
 
 import java.util.ArrayList;
 import java.util.List;

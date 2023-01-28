@@ -1,7 +1,9 @@
 package org.example.service;
 
-import org.example.entity.Banner;
-import org.example.entity.Country;
+import org.example.dto.BannerFilter;
+import org.example.dto.BannerPriority;
+import org.example.dto.entity.Banner;
+import org.example.dto.entity.Country;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -93,6 +95,47 @@ class AuctionServiceImplTest {
 
     }
 
+
+    // для опциональных задач только несколько тестов
+    @Test
+    void getBannersForShowingFilterByMinCost() {
+        BannerFilter filter = new BannerFilter();
+        filter.setMinCost(50);
+        List<Banner> banners = getFiveDifferentBanners();
+        banners.get(2).setCost(100);
+        banners.get(4).setCost(10);
+
+        List<Banner> bannersForShowing = auctionService.getBannersForShowing(banners, 5, filter, new BannerPriority());
+
+        assertEquals(1, bannersForShowing.size());
+        assertEquals(100.0, bannersForShowing.get(0).getCost());
+    }
+
+    @Test
+    void getBannersForShowingPriorityByBannerIdDown() {
+        BannerPriority priority = new BannerPriority();
+        priority.setBannerId(-1);
+        List<Banner> banners = getFiveDifferentBanners();
+
+        List<Banner> bannersForShowing = auctionService.getBannersForShowing(banners, 5, new BannerFilter(), priority);
+
+        assertEquals(5, bannersForShowing.size());
+        assertEquals(5, bannersForShowing.get(0).getBannerId());
+    }
+
+    @Test
+    void getBannersForShowingPriorityByTwoDirectional() {
+        BannerPriority priority = new BannerPriority();
+        priority.setAdvCampaignId(1);
+        priority.setBannerId(-1);
+        List<Banner> banners = getFiveDifferentBanners();
+
+        List<Banner> bannersForShowing = auctionService.getBannersForShowing(banners, 5, new BannerFilter(), priority);
+
+        assertEquals(5, bannersForShowing.size());
+        assertEquals(1, bannersForShowing.get(0).getAdvCampaignId());
+    }
+
     private List<Banner> getTwoCampaignDuplicateBanners(Country country) {
         Banner banner1 = getBannerWithCountry(1, 1, country);
         Banner banner2 = getBannerWithCountry(2, 1, country);
@@ -118,7 +161,7 @@ class AuctionServiceImplTest {
 
     private List<Banner> getFiveDifferentBanners() {
         List<Banner> banners = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 1; i <= 5; i++) {
             Banner banner = getBanner(i, i);
             banners.add(banner);
         }
